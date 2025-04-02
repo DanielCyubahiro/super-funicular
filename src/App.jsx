@@ -1,6 +1,6 @@
 import './App.css';
 import Theme from './Theme/Theme.jsx';
-import {initialColors, initialThemes} from './lib/colors.js';
+import {initialThemes} from './lib/colors.js';
 import {useState} from 'react';
 import useLocalStorageState from 'use-local-storage-state';
 
@@ -9,13 +9,19 @@ function App() {
       {
         defaultValue: initialThemes,
       });
-  const [selectedThemeColors, setSelectedThemeColors] = useState(initialColors);
+  const [selectedTheme, setSelectedTheme] = useState(initialThemes.find(
+      (theme) => theme.name === 'Default Theme'));
 
   const handleChangeTheme = (e) => {
-    const selectedTheme = initialThemes.find(
-        (theme) => theme.id === e.target.value);
-    selectedTheme ? setSelectedThemeColors(selectedTheme.colors) : null;
+    setSelectedTheme(
+        themes.find((theme) => theme.id === e.target.value));
   };
+
+  const updateThemes = (theme) => {
+    setSelectedTheme(theme);
+    setThemes(themes.map((t) => t.id === theme.id ? theme : t));
+  };
+
   return (
       <>
         <h1>Theme Creator</h1>
@@ -33,7 +39,10 @@ function App() {
             )
           }
         </select>
-        <Theme colorPalette={selectedThemeColors}/>
+        <Theme
+            selectedTheme={selectedTheme}
+            setSelectedTheme={updateThemes}
+        />
       </>
   );
 }
