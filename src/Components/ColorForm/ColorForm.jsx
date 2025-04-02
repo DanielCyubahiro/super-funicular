@@ -3,10 +3,11 @@ import {useState} from 'react';
 import {isValidHex} from '../../lib/utls.js';
 import ColorInput from '../ColorInput/ColorInput.jsx';
 
-const ColorForm = () => {
+const ColorForm = ({onAddNewColor}) => {
   const [color, setColor] = useState('#000000');
-  const [contrastText, setContrastText] = useState('#fff');
-  const [role, setRole] = useState('');
+  const [contrastText, setContrastText] = useState('#ffffff');
+  const [role, setRole] = useState('Secondary main');
+
   const [errors, setErrors] = useState({
     color: '',
     contrastText: '',
@@ -17,8 +18,7 @@ const ColorForm = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (isFormValid) {
-      // Submit logic here
-      console.log({color, contrastText, role});
+      onAddNewColor({hex: color, contrastText, role});
     }
   };
 
