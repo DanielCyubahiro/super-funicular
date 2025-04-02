@@ -1,42 +1,39 @@
-import {initialColors} from './lib/colors';
-import Color from './Components/Color/Color';
 import './App.css';
-import ColorForm from './Components/ColorForm/ColorForm.jsx';
-import {uid} from 'uid';
+import Theme from './Theme/Theme.jsx';
+import {initialColors, initialThemes} from './lib/colors.js';
+import {useState} from 'react';
 import useLocalStorageState from 'use-local-storage-state';
 
 function App() {
-
-  const [colors, setColors] = useLocalStorageState('colors',
+  const [themes, setThemes] = useLocalStorageState('themes',
       {
-        defaultValue: initialColors,
+        defaultValue: initialThemes,
       });
+  const [selectedThemeColors, setSelectedThemeColors] = useState(initialColors);
 
-  const handleAddOrUpdateColor = (color) => {
-    'id' in color
-        ? setColors(colors.map(c => c.id === color.id ? color : c)) // Update color
-        : setColors([{id: uid(), ...color}, ...colors]); // New color
-
-  };
-
-  const handleDelete = (colorId) => {
-    setColors(colors.filter(color => color.id !== colorId));
+  const handleChangeTheme = (e) => {
+    const selectedTheme = initialThemes.find(
+        (theme) => theme.id === e.target.value);
+    selectedTheme ? setSelectedThemeColors(selectedTheme.colors) : null;
   };
   return (
       <>
         <h1>Theme Creator</h1>
-        <ColorForm onAddOrUpdateColor={handleAddOrUpdateColor}/>
-        {
-          colors.length ? colors.map((color) => {
-                return <Color
-                    key={color.id}
-                    color={color}
-                    onDelete={() => handleDelete(color.id)}
-                    onEdit={handleAddOrUpdateColor}
-                />;
-              },
-          ) : <p>No colors... start by adding one!</p>
-        }
+        <select
+            onChange={handleChangeTheme}
+        >
+          {
+            themes.map((theme) =>
+                <option
+                    key={theme.id}
+                    value={theme.id}
+                >
+                  {theme.name}
+                </option>,
+            )
+          }
+        </select>
+        <Theme colorPalette={selectedThemeColors}/>
       </>
   );
 }

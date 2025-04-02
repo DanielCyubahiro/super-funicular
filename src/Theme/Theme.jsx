@@ -12,13 +12,12 @@ const Theme = ({colorPalette}) => {
 
   useEffect(() => {
     setColors(colorPalette);
-  }, [colorPalette]);
+  }, [colorPalette, setColors]);
 
   const handleAddOrUpdateColor = (color) => {
     'id' in color
         ? setColors(colors.map(c => c.id === color.id ? color : c)) // Update color
         : setColors([{id: uid(), ...color}, ...colors]); // New color
-
   };
 
   const handleDelete = (colorId) => {
