@@ -1,8 +1,10 @@
 import './Color.css';
 import {useState} from 'react';
+import ColorForm from '../ColorForm/ColorForm.jsx';
 
-export default function Color({color, onDelete}) {
+export default function Color({color, onDelete, onEdit}) {
   const [showConfirm, setShowConfirm] = useState(false);
+  const [showEditForm, setShowEditForm] = useState(false);
   return (
       <div
           className="color-card"
@@ -25,9 +27,16 @@ export default function Color({color, onDelete}) {
             )
         }
         <button
-            onClick={showConfirm ? onDelete : () => setShowConfirm(true)}>
+            onClick={showConfirm ? onDelete : () => setShowConfirm(true)}
+        >
           Delete
         </button>
+        <button
+            onClick={() => setShowEditForm(true)}
+        >
+          Edit
+        </button>
+        {showEditForm && <ColorForm onAddOrUpdateColor={onEdit} colorCard={color} setShowEditForm={setShowEditForm}/>}
       </div>
   );
 }

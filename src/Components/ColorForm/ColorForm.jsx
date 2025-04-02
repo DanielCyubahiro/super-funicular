@@ -3,10 +3,16 @@ import {useState} from 'react';
 import {isValidHex} from '../../lib/utls.js';
 import ColorInput from '../ColorInput/ColorInput.jsx';
 
-const ColorForm = ({onAddNewColor}) => {
-  const [color, setColor] = useState('#000000');
-  const [contrastText, setContrastText] = useState('#ffffff');
-  const [role, setRole] = useState('Secondary main');
+const ColorForm = ({
+  onAddOrUpdateColor,
+  colorCard = null,
+  setShowEditForm = null,
+}) => {
+  const [color, setColor] = useState(colorCard ? colorCard.hex : '#000000');
+  const [contrastText, setContrastText] = useState(
+      colorCard ? colorCard.contrastText : '#ffffff');
+  const [role, setRole] = useState(
+      colorCard ? colorCard.role : 'Secondary main');
 
   const [errors, setErrors] = useState({
     color: '',
@@ -18,7 +24,23 @@ const ColorForm = ({onAddNewColor}) => {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (isFormValid) {
-      onAddNewColor({hex: color, contrastText, role});
+      colorCard
+          ? onAddOrUpdateColor({
+            id: colorCard.id,
+            hex: color,
+            contrastText,
+            role,
+          })
+          : onAddOrUpdateColor({
+            hex: color,
+            contrastText,
+            role,
+          });
+
+      //Hide form
+      if (setShowEditForm) {
+        setShowEditForm(false);
+      }
     }
   };
 
@@ -65,8 +87,15 @@ const ColorForm = ({onAddNewColor}) => {
         />
 
         <button type="submit" disabled={!isFormValid}>
-          Add Color
+          {colorCard ? 'Update Color' : 'Add Color'}
         </button>
+        {
+            setShowEditForm && (
+                <button onClick={() => setShowEditForm && setShowEditForm(false)}>
+                  Cancel Update
+                </button>
+            )
+        }
       </form>
   );
 };
