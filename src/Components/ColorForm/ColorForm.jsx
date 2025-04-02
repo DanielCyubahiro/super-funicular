@@ -1,6 +1,7 @@
 import './ColorForm.css';
 import {useState} from 'react';
 import {isValidHex} from '../../lib/utls.js';
+import ColorInput from '../ColorInput/ColorInput.jsx';
 
 const ColorForm = () => {
   const [color, setColor] = useState('#000000');
@@ -11,95 +12,63 @@ const ColorForm = () => {
     contrastText: '',
   });
 
-  const handleSumbit = (e) => {
+  const isFormValid = !errors.color && !errors.contrastText && role.trim();
+
+  const handleSubmit = (e) => {
     e.preventDefault();
-  };
-  const handleChangeColor = (value, source) => {
-    if (source === 'color') {
-      setColor(value);
-
-      //Validate hex value
-      !isValidHex(value) ? setErrors(
-              prevState => ({...prevState, color: 'Invalid hex color format'}))
-          :
-          setErrors(prevState => ({...prevState, color: ''}));
-    } else if (source === 'contrast-text') {
-      setContrastText(value);
-
-      //Validate hex value
-      !isValidHex(value) ? setErrors(
-              prevState => ({
-                ...prevState,
-                contrastText: 'Invalid hex color format',
-              }))
-          :
-          setErrors(prevState => ({...prevState, contrastText: ''}));
+    if (isFormValid) {
+      // Submit logic here
+      console.log({color, contrastText, role});
     }
   };
+
+  const handleChangeColor = (value, source) => {
+    const isValid = isValidHex(value);
+    const errorMessage = isValid ? '' : 'Invalid hex color format';
+
+    if (source === 'color') {
+      setColor(value);
+      setErrors((prev) => ({...prev, color: errorMessage}));
+    } else if (source === 'contrastText') {
+      setContrastText(value);
+      setErrors((prev) => ({...prev, contrastText: errorMessage}));
+    }
+  };
+
   return (
-      <form onSubmit={handleSumbit}>
-        <label htmlFor={'role'}>
+      <form onSubmit={handleSubmit}>
+        <label htmlFor="role">
           Role
           <input
               required
               value={role}
-              id={'role'}
+              id="role"
               type="text"
               onChange={(e) => setRole(e.target.value)}
           />
         </label>
-        <label htmlFor={'hex'}>
-          Hex
-          <div className={'color-input-group'}>
-            <input
-                value={color}
-                id={'hex'}
-                type="text"
-                onChange={(e) => handleChangeColor(e.target.value, 'color')}
-            />
-            <input
-                value={color}
-                type="color"
-                onChange={(e) => handleChangeColor(e.target.value, 'color')}
-            />
-          </div>
-          {errors.color &&
-              <span
-                  className="error-message">
-                {errors.color}
-              </span>
-          }
-        </label>
-        <label htmlFor={'contrastText'}>
-          Contrast Text
-          <div className={'color-input-group'}>
-            <input
-                value={contrastText}
-                id={'contrastText'}
-                type="text"
-                onChange={(e) => handleChangeColor(e.target.value,
-                    'contrast-text')}
-            />
-            <input
-                value={contrastText}
-                type="color"
-                onChange={(e) => handleChangeColor(e.target.value,
-                    'contrast-text')}
-            />
-          </div>
-          {errors.contrastText &&
-              <span
-                  className="error-message">
-                {errors.contrastText}
-              </span>
-          }
-        </label>
-        <button
-            type="submit"
-            disabled={Object.values(errors).some(error => error)}>
+
+        <ColorInput
+            id="hex"
+            label="Hex"
+            value={color}
+            error={errors.color}
+            onChange={(value) => handleChangeColor(value, 'color')}
+        />
+
+        <ColorInput
+            id="contrastText"
+            label="Contrast Text"
+            value={contrastText}
+            error={errors.contrastText}
+            onChange={(value) => handleChangeColor(value, 'contrastText')}
+        />
+
+        <button type="submit" disabled={!isFormValid}>
           Add Color
         </button>
       </form>
   );
 };
+
 export default ColorForm;
