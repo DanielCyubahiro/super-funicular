@@ -31,11 +31,11 @@ export default function Color({color, onDelete, onEdit}) {
         >
           Delete
         </button>
-        <button
+        {!showConfirm && (<button
             onClick={() => setShowEditForm(true)}
         >
           Edit
-        </button>
+        </button>)}
         {showEditForm && <ColorForm onAddOrUpdateColor={onEdit} colorCard={color} setShowEditForm={setShowEditForm}/>}
       </div>
   );
