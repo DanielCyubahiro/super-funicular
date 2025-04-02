@@ -1,3 +1,4 @@
+import './ColorForm.css'
 const ColorForm = () => {
   return (
       <form>
