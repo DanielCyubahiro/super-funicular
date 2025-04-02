@@ -89,6 +89,13 @@ const ColorForm = ({
         <button type="submit" disabled={!isFormValid}>
           {colorCard ? 'Update Color' : 'Add Color'}
         </button>
+        {
+            setShowEditForm && (
+                <button onClick={() => setShowEditForm && setShowEditForm(false)}>
+                  Cancel Update
+                </button>
+            )
+        }
       </form>
   );
 };
