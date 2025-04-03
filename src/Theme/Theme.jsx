@@ -1,11 +1,13 @@
 import ColorForm from '../Components/ColorForm/ColorForm.jsx';
 import Color from '../Components/Color/Color.jsx';
 import {uid} from 'uid';
+import {checkContrast} from '../lib/utls.js';
 
 const Theme = ({selectedTheme, setSelectedTheme}) => {
 
-  const handleAddOrUpdateColor = (color) => {
-    'id' in color
+  const handleAddOrUpdateColor = async (color) => {
+    const checkedColor = {...color, contrastScore: await checkContrast(color.hex, color.contrastText)};
+    'id' in checkedColor
         ? setSelectedTheme({
           ...selectedTheme,
           colors: selectedTheme.colors.map(c => c.id === color.id ? color : c),

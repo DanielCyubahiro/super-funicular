@@ -1,6 +1,6 @@
 import './ColorForm.css';
 import {useState} from 'react';
-import {isValidHex} from '../../lib/utls.js';
+import {checkContrast, isValidHex} from '../../lib/utls.js';
 import ColorInput from '../ColorInput/ColorInput.jsx';
 
 const ColorForm = ({
@@ -21,7 +21,7 @@ const ColorForm = ({
 
   const isFormValid = !errors.color && !errors.contrastText && role.trim();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (isFormValid) {
       colorCard
@@ -30,11 +30,13 @@ const ColorForm = ({
             hex: color,
             contrastText,
             role,
+            contrastScore: await checkContrast(color, contrastText),
           })
           : onAddOrUpdateColor({
             hex: color,
             contrastText,
             role,
+            contrastScore: await checkContrast(color, contrastText),
           });
 
       //Hide form
@@ -44,7 +46,7 @@ const ColorForm = ({
     }
   };
 
-  const handleChangeColor = (value, source) => {
+  const handleChangeColor = async (value, source) => {
     const isValid = isValidHex(value);
     const errorMessage = isValid ? '' : 'Invalid hex color format';
 

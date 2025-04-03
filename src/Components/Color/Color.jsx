@@ -15,9 +15,21 @@ export default function Color({color, onDelete, onEdit}) {
           }}
       >
         <h3 className="color-card-highlight">{color.hex}</h3>
-        <CopyToClipboard text={color.hex} />
+        <CopyToClipboard text={color.hex}/>
         <h4>{color.role}</h4>
         <p>contrast: {color.contrastText}</p>
+        {
+            color.contrastScore &&
+            <p
+                style={{
+                  background: color.contrastScore === 'Yup' ? 'green' : color.contrastScore === 'Kinda' ? 'orange' : 'red',
+                  width:'fit-content',
+                  color: 'white'
+                }}
+            >
+              Overall Contrast Score: {color.contrastScore}
+            </p>
+        }
         {
             showConfirm && (
                 <>
