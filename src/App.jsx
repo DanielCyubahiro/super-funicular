@@ -7,9 +7,7 @@ import {uid} from 'uid';
 
 function App() {
   const [themes, setThemes] = useLocalStorageState('themes',
-      {
-        defaultValue: initialThemes,
-      });
+      {defaultValue: initialThemes});
   const [selectedTheme, setSelectedTheme] = useState(initialThemes.find(
       (theme) => theme.name === 'Default Theme'));
 
@@ -36,7 +34,7 @@ function App() {
         ? {...t, name: selectedThemeName}
         : t));
     addMode ? setAddMode(false) : setEditMode(false);
-    console.log(selectedThemeName)
+    console.log(selectedThemeName);
   };
 
   const handleDeleteTheme = () => {
@@ -75,7 +73,7 @@ function App() {
                             id: uid(),
                             name: '',
                             colors: [],
-                          }
+                          };
                           setSelectedTheme(newTheme);
                           setThemes([...themes, newTheme]);
                         }}
@@ -84,6 +82,7 @@ function App() {
                     </button>
                     <button
                         onClick={() => setEditMode(true)}
+                        disabled={selectedTheme.name === 'Default Theme'}
                     >
                       Edit
                     </button>
@@ -92,7 +91,10 @@ function App() {
               <button
                   onClick={showDeleteConfirm
                       ? handleDeleteTheme
-                      : () => setShowDeleteConfirm(true)}
+                      : () => setShowDeleteConfirm(true)
+                  }
+                  disabled={selectedTheme.name === 'Default Theme'}
+
               >
                 {showDeleteConfirm ? 'Really Delete' : 'Delete'}
               </button>
