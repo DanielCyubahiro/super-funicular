@@ -20,7 +20,15 @@ export default function Color({color, onDelete, onEdit}) {
         <p>contrast: {color.contrastText}</p>
         {
             color.contrastScore &&
-            <p>Overall Contrast Score: {color.contrastScore}</p>
+            <p
+                style={{
+                  background: color.contrastScore === 'Yup' ? 'green' : color.contrastScore === 'Kinda' ? 'orange' : 'red',
+                  width:'fit-content',
+                  color: 'white'
+                }}
+            >
+              Overall Contrast Score: {color.contrastScore}
+            </p>
         }
         {
             showConfirm && (
