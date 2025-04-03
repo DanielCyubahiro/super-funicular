@@ -3,6 +3,7 @@ import Theme from './Theme/Theme.jsx';
 import {initialThemes} from './lib/colors.js';
 import {useState} from 'react';
 import useLocalStorageState from 'use-local-storage-state';
+import {uid} from 'uid';
 
 function App() {
   const [themes, setThemes] = useLocalStorageState('themes',
@@ -12,8 +13,9 @@ function App() {
   const [selectedTheme, setSelectedTheme] = useState(initialThemes.find(
       (theme) => theme.name === 'Default Theme'));
 
-  const [showEdit, setShowEdit] = useState(false);
-  const [showConfirm, setShowConfirm] = useState(false);
+  const [editMode, setEditMode] = useState(false);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [addMode, setAddMode] = useState(false);
 
   const [selectedThemeName, setSelectedThemeName] = useState(
       selectedTheme.name);
@@ -33,25 +35,27 @@ function App() {
     setThemes(themes.map((t) => t.id === selectedTheme.id
         ? {...t, name: selectedThemeName}
         : t));
-    setShowEdit(false);
+    addMode ? setAddMode(false) : setEditMode(false);
+    console.log(selectedThemeName)
   };
 
   const handleDeleteTheme = () => {
     setThemes(themes.filter((t) => t.id !== selectedTheme.id));
     setSelectedTheme(
         initialThemes.find((theme) => theme.name === 'Default Theme'));
-    setShowConfirm(false);
+    setShowDeleteConfirm(false);
   };
 
   return (
       <>
         <h1>Theme Creator</h1>
-        {!showEdit && (
+        {!editMode && !addMode && (
             <>
-              {!showConfirm && (
+              {!showDeleteConfirm && (
                   <>
                     <select
                         onChange={handleChangeSelectedTheme}
+                        value={selectedTheme.id}
                     >
                       {
                         themes.map((theme) =>
@@ -65,40 +69,60 @@ function App() {
                       }
                     </select>
                     <button
-                        onClick={() => setShowEdit(true)}
+                        onClick={() => {
+                          setAddMode(true);
+                          const newTheme = {
+                            id: uid(),
+                            name: '',
+                            colors: [],
+                          }
+                          setSelectedTheme(newTheme);
+                          setThemes([...themes, newTheme]);
+                        }}
+                    >
+                      Add
+                    </button>
+                    <button
+                        onClick={() => setEditMode(true)}
                     >
                       Edit
                     </button>
                   </>
               )}
               <button
-                  onClick={showConfirm
+                  onClick={showDeleteConfirm
                       ? handleDeleteTheme
-                      : () => setShowConfirm(true)}
+                      : () => setShowDeleteConfirm(true)}
               >
-                {showConfirm ? 'Really Delete' : 'Delete'}
+                {showDeleteConfirm ? 'Really Delete' : 'Delete'}
               </button>
-              {showConfirm && (
+              {showDeleteConfirm && (
                   <button
-                      onClick={() => setShowConfirm(false)}
+                      onClick={() => setShowDeleteConfirm(false)}
                   >
                     Cancel
                   </button>
               )}
             </>
         )}
-        {showEdit && (
+        {(editMode || addMode) && (
             <>
-              <input type="text" value={selectedThemeName}
-                     onChange={(e) => setSelectedThemeName(e.target.value)}/>
+              {addMode ? <input
+                  type="text"
+                  onChange={(e) => setSelectedThemeName(e.target.value)}
+              /> : <input
+                  type="text"
+                  value={selectedThemeName}
+                  onChange={(e) => setSelectedThemeName(e.target.value)}
+              />}
               <button
                   onClick={handleEditThemeName}
               >
-                Update
+                {addMode ? 'Save' : 'Update'}
               </button>
               <button
                   onClick={() => {
-                    setShowEdit(false);
+                    addMode ? setAddMode(false) : setEditMode(false);
                     setSelectedThemeName(selectedTheme.name);
                   }}
               >
