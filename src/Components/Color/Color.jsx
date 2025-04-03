@@ -15,9 +15,13 @@ export default function Color({color, onDelete, onEdit}) {
           }}
       >
         <h3 className="color-card-highlight">{color.hex}</h3>
-        <CopyToClipboard text={color.hex} />
+        <CopyToClipboard text={color.hex}/>
         <h4>{color.role}</h4>
         <p>contrast: {color.contrastText}</p>
+        {
+            color.contrastScore &&
+            <p>Overall Contrast Score: {color.contrastScore}</p>
+        }
         {
             showConfirm && (
                 <>
