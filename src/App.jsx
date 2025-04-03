@@ -12,6 +12,10 @@ function App() {
   const [selectedTheme, setSelectedTheme] = useState(initialThemes.find(
       (theme) => theme.name === 'Default Theme'));
 
+  const [showEditForm, setShowEditForm] = useState(false);
+  const [selectedThemeName, setSelectedThemeName] = useState(
+      selectedTheme.name);
+
   const handleChangeTheme = (e) => {
     setSelectedTheme(
         themes.find((theme) => theme.id === e.target.value));
@@ -22,23 +26,60 @@ function App() {
     setThemes(themes.map((t) => t.id === theme.id ? theme : t));
   };
 
+  const handleEditThemeName = () => {
+    setSelectedTheme({...selectedTheme, name: selectedThemeName});
+    setThemes(themes.map((t) => t.id === selectedTheme.id
+        ? {...t, name: selectedThemeName}
+        : t));
+    setShowEditForm(false);
+  };
+
   return (
       <>
         <h1>Theme Creator</h1>
-        <select
-            onChange={handleChangeTheme}
-        >
-          {
-            themes.map((theme) =>
-                <option
-                    key={theme.id}
-                    value={theme.id}
-                >
-                  {theme.name}
-                </option>,
-            )
-          }
-        </select>
+        {!showEditForm && (
+            <>
+              <select
+                  onChange={handleChangeTheme}
+              >
+                {
+                  themes.map((theme) =>
+                      <option
+                          key={theme.id}
+                          value={theme.id}
+                      >
+                        {theme.name}
+                      </option>,
+                  )
+                }
+              </select>
+              <button
+                  onClick={() => setShowEditForm(true)}
+              >
+                Edit
+              </button>
+            </>
+        )}
+        {showEditForm && (
+            <>
+              <input type="text" value={selectedThemeName}
+                     onChange={(e) => setSelectedThemeName(e.target.value)}/>
+              <button
+                  onClick={handleEditThemeName}
+              >
+                Update
+              </button>
+              <button
+                  onClick={() => {
+                    setShowEditForm(false);
+                    setSelectedThemeName(selectedTheme.name);
+                  }}
+              >
+                Cancel
+              </button>
+            </>
+        )}
+
         <Theme
             selectedTheme={selectedTheme}
             setSelectedTheme={updateThemes}
