@@ -13,10 +13,12 @@ function App() {
       (theme) => theme.name === 'Default Theme'));
 
   const [showEdit, setShowEdit] = useState(false);
+  const [showConfirm, setShowConfirm] = useState(false);
+
   const [selectedThemeName, setSelectedThemeName] = useState(
       selectedTheme.name);
 
-  const handleChangeTheme = (e) => {
+  const handleChangeSelectedTheme = (e) => {
     setSelectedTheme(
         themes.find((theme) => theme.id === e.target.value));
   };
@@ -34,30 +36,55 @@ function App() {
     setShowEdit(false);
   };
 
+  const handleDeleteTheme = () => {
+    setThemes(themes.filter((t) => t.id !== selectedTheme.id));
+    setSelectedTheme(
+        initialThemes.find((theme) => theme.name === 'Default Theme'));
+    setShowConfirm(false);
+  };
+
   return (
       <>
         <h1>Theme Creator</h1>
         {!showEdit && (
             <>
-              <select
-                  onChange={handleChangeTheme}
-              >
-                {
-                  themes.map((theme) =>
-                      <option
-                          key={theme.id}
-                          value={theme.id}
-                      >
-                        {theme.name}
-                      </option>,
-                  )
-                }
-              </select>
+              {!showConfirm && (
+                  <>
+                    <select
+                        onChange={handleChangeSelectedTheme}
+                    >
+                      {
+                        themes.map((theme) =>
+                            <option
+                                key={theme.id}
+                                value={theme.id}
+                            >
+                              {theme.name}
+                            </option>,
+                        )
+                      }
+                    </select>
+                    <button
+                        onClick={() => setShowEdit(true)}
+                    >
+                      Edit
+                    </button>
+                  </>
+              )}
               <button
-                  onClick={() => setShowEdit(true)}
+                  onClick={showConfirm
+                      ? handleDeleteTheme
+                      : () => setShowConfirm(true)}
               >
-                Edit
+                {showConfirm ? 'Really Delete' : 'Delete'}
               </button>
+              {showConfirm && (
+                  <button
+                      onClick={() => setShowConfirm(false)}
+                  >
+                    Cancel
+                  </button>
+              )}
             </>
         )}
         {showEdit && (
