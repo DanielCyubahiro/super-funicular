@@ -12,7 +12,7 @@ function App() {
   const [selectedTheme, setSelectedTheme] = useState(initialThemes.find(
       (theme) => theme.name === 'Default Theme'));
 
-  const [showEditForm, setShowEditForm] = useState(false);
+  const [showEdit, setShowEdit] = useState(false);
   const [selectedThemeName, setSelectedThemeName] = useState(
       selectedTheme.name);
 
@@ -31,13 +31,13 @@ function App() {
     setThemes(themes.map((t) => t.id === selectedTheme.id
         ? {...t, name: selectedThemeName}
         : t));
-    setShowEditForm(false);
+    setShowEdit(false);
   };
 
   return (
       <>
         <h1>Theme Creator</h1>
-        {!showEditForm && (
+        {!showEdit && (
             <>
               <select
                   onChange={handleChangeTheme}
@@ -54,13 +54,13 @@ function App() {
                 }
               </select>
               <button
-                  onClick={() => setShowEditForm(true)}
+                  onClick={() => setShowEdit(true)}
               >
                 Edit
               </button>
             </>
         )}
-        {showEditForm && (
+        {showEdit && (
             <>
               <input type="text" value={selectedThemeName}
                      onChange={(e) => setSelectedThemeName(e.target.value)}/>
@@ -71,7 +71,7 @@ function App() {
               </button>
               <button
                   onClick={() => {
-                    setShowEditForm(false);
+                    setShowEdit(false);
                     setSelectedThemeName(selectedTheme.name);
                   }}
               >
