@@ -34,7 +34,6 @@ function App() {
         ? {...t, name: selectedThemeName}
         : t));
     addMode ? setAddMode(false) : setEditMode(false);
-    console.log(selectedThemeName);
   };
 
   const handleDeleteTheme = () => {
