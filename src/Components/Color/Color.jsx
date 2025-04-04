@@ -1,11 +1,19 @@
 import './Color.css';
-import {useState} from 'react';
+import {useEffect, useState} from 'react';
 import ColorForm from '../ColorForm/ColorForm.jsx';
 import CopyToClipboard from '../CopyToClipboard/CopyToClipboard.jsx';
+import {checkContrast} from '../../lib/utls.js';
 
 export default function Color({color, onDelete, onEdit}) {
   const [showConfirm, setShowConfirm] = useState(false);
   const [showEditForm, setShowEditForm] = useState(false);
+  const [contrastScore, setContrastScore] = useState(color.contrastScore);
+
+  useEffect(() => {
+    void (async () => {
+      setContrastScore(await checkContrast(color.hex, color.contrastText));
+    })()
+  }, [color])
   return (
       <div
           className="color-card"
@@ -19,15 +27,18 @@ export default function Color({color, onDelete, onEdit}) {
         <h4>{color.role}</h4>
         <p>contrast: {color.contrastText}</p>
         {
-            color.contrastScore &&
+            contrastScore &&
             <p
                 style={{
-                  background: color.contrastScore === 'Yup' ? 'green' : color.contrastScore === 'Kinda' ? 'orange' : 'red',
-                  width:'fit-content',
-                  color: 'white'
+                  background: contrastScore === 'Yup'
+                      ? 'green'
+                      : contrastScore ===
+                      'Kinda' ? 'orange' : 'red',
+                  width: 'fit-content',
+                  color: 'white',
                 }}
             >
-              Overall Contrast Score: {color.contrastScore}
+              Overall Contrast Score: {contrastScore}
             </p>
         }
         {
